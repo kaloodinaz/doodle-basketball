@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#151515" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ドゥードルバスケットボール - 無料オンラインゲーム</title>
+    <meta name="description" content="ドゥードルバスケットボールをオンラインで無料プレイ！楽しいバスケットボールシューティングゲーム。スマホ、タブレット、PCに対応。今すぐプレイして最高スコアを目指そう！">
+    <meta name="keywords" content="ドゥードルバスケットボール, バスケットボールゲーム, 無料ゲーム, オンラインゲーム, スポーツゲーム">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="ドゥードルバスケットボール - 無料オンラインゲーム">
+    <meta property="og:description" content="楽しいバスケットボールシューティングゲームを無料でプレイ！">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23ff6b35'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%23fff' stroke-width='2'/%3E%3Cpath d='M20 32h24M32 20v24' stroke='%23fff' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23fff'/%3E%3C/svg%3E">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #f0f0f0;
+            margin-bottom: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .game-header {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .game-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #ff6b35;
+        }
+
+        .btn-primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .game-iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            display: block;
+        }
+
+        .fullscreen-iframe {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 9999 !important;
+            background: black;
+        }
+
+        .ad-container {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .ad-placeholder {
+            width: 728px;
+            height: 90px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+            margin: 0 auto;
+            border-radius: 10px;
+        }
+
+        .info-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card h3 {
+            color: #ff6b35;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: #ff6b35;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .features-list li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .features-list li::before {
+            content: '🏀';
+            position: absolute;
+            left: 0;
+            top: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .game-iframe {
+                height: 400px;
+            }
+
+            .game-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .controls {
+                justify-content: center;
+            }
+
+            .info-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .info-card {
+                padding: 20px;
+            }
+
+            .ad-container {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .game-iframe {
+                height: 350px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .ad-container {
+                display: block;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff6b35;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Focus styles for accessibility */
+        .btn:focus {
+            outline: 3px solid rgba(255, 107, 53, 0.5);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+    if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/sw.js')
+    .then(registration => {console.log('Service Worker registered successfully:', registration);})
+    .catch(error => {console.log('Error in Service Worker registration:', error);});});}
+    </script>
+    <div class="container">
+        <header>
+            <h1>🏀 ドゥードルバスケットボール</h1>
+            <p class="subtitle">楽しいバスケットボールシューティングゲームを無料でプレイ！</p>
+        </header>
+
+        <!-- Ad Container for PC only 
+        <div class="ad-container">
+            <div class="ad-placeholder">
+                広告スペース (728x90)
+            </div>
+        </div> -->
+
+        <div class="game-container">
+            <div class="game-header">
+                <div class="game-title">ゲームプレイ</div>
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="reloadGame()">🔄 リロード</button>
+                    <button class="btn btn-secondary" onclick="toggleFullscreen()">⛶ フルスクリーン</button>
+                </div>
+            </div>
+            <div id="loading" class="loading">ゲームを読み込み中...</div>
+            <iframe 
+                id="gameFrame" 
+                class="game-iframe" 
+                src="https://doodlecricketunblocked.netlify.app/doodle-basketball"
+                title="ドゥードルバスケットボールゲーム"
+                allowfullscreen
+                style="display: none;">
+            </iframe>
+        </div>
+
+        <!-- Ad Container for PC only -->
+        <div class="ad-container">
+            <div class="ad-placeholder">
+               <script type="text/javascript">
+     atOptions = {
+       'key' : 'd1d26e15f7c349fd8e403bb5ea491a31',
+       'format' : 'iframe',
+       'height' : 90,
+       'width' : 728,
+       'params' : {}
+     };
+   </script>
+   <script type="text/javascript" src="//www.highperformanceformat.com/d1d26e15f7c349fd8e403bb5ea491a31/invoke.js"></script>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-card">
+                <h3>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 7V9C15 10.1 14.1 11 13 11V22H11V16H9V22H7V11C5.9 11 5 10.1 5 9V7H1V9C1 11.2 2.8 13 5 13V22H19V13C21.2 13 23 11.2 23 9Z"/>
+                    </svg>
+                    ゲームについて
+                </h3>
+                <p>ドゥードルバスケットボールは、シンプルで楽しいバスケットボールシューティングゲームです。マウスやタッチで狙いを定めて、できるだけ多くのシュートを決めましょう！</p>
+                <ul class="features-list">
+                    <li>簡単な操作で誰でも楽しめる</li>
+                    <li>リアルな物理演算</li>
+                    <li>スコアチャレンジ機能</li>
+                    <li>無料でプレイ可能</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M9 11H7V13H9V11M13 11H11V13H13V11M17 11H15V13H17V11M19 3H18V1H16V3H8V1H6V3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M19 19H5V8H19V19Z"/>
+                    </svg>
+                    遊び方
+                </h3>
+                <p>ゲームの操作方法とルールをマスターして、高得点を目指しましょう！</p>
+                <ul class="features-list">
+                    <li>マウスでボールの軌道を調整</li>
+                    <li>クリックまたはタップでシュート</li>
+                    <li>連続でシュートを決めてコンボボーナス</li>
+                    <li>時間内に多くの得点を獲得</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5A2,2 0 0,0 17,3M17,18L12,15.82L7,18V5H17V18Z"/>
+                    </svg>
+                    攻略のコツ
+                </h3>
+                <p>上達のためのヒントとテクニックを活用して、友達に差をつけましょう！</p>
+                <ul class="features-list">
+                    <li>力加減と角度を意識する</li>
+                    <li>風の向きと強さを考慮</li>
+                    <li>リズムよく連続シュート</li>
+                    <li>練習を重ねて感覚を身につける</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <p>&copy; 2025 ドゥードルバスケットボール. すべての権利を保有します。</p>
+                <p>このゲームはブラウザで動作し、インストール不要でお楽しみいただけます。</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Game iframe management
+        const gameFrame = document.getElementById('gameFrame');
+        const loading = document.getElementById('loading');
+
+        // Show iframe when loaded
+        gameFrame.onload = function() {
+            loading.style.display = 'none';
+            gameFrame.style.display = 'block';
+        };
+
+        // Reload game function
+        function reloadGame() {
+            loading.style.display = 'flex';
+            gameFrame.style.display = 'none';
+            gameFrame.src = gameFrame.src;
+        }
+
+        // Fullscreen functionality
+        function toggleFullscreen() {
+            if (gameFrame.classList.contains('fullscreen-iframe')) {
+                exitFullscreen();
+            } else {
+                enterFullscreen();
+            }
+        }
+
+        function enterFullscreen() {
+            gameFrame.classList.add('fullscreen-iframe');
+            
+            // Create exit fullscreen button
+            const exitBtn = document.createElement('button');
+            exitBtn.id = 'exitFullscreenBtn';
+            exitBtn.innerHTML = '✕ フルスクリーン終了';
+            exitBtn.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                background: #ff6b35;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 25px;
+                font-size: 14px;
+                font-weight: bold;
+                cursor: pointer;
+                font-family: inherit;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                transition: all 0.3s ease;
+            `;
+            exitBtn.onclick = exitFullscreen;
+            document.body.appendChild(exitBtn);
+
+            // Hide body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        function exitFullscreen() {
+            gameFrame.classList.remove('fullscreen-iframe');
+            
+            // Remove exit button
+            const exitBtn = document.getElementById('exitFullscreenBtn');
+            if (exitBtn) {
+                exitBtn.remove();
+            }
+
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
+        }
+
+        // Handle escape key for fullscreen
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && gameFrame.classList.contains('fullscreen-iframe')) {
+                exitFullscreen();
+            }
+        });
+
+        // Responsive ad management
+        function handleResize() {
+            const adContainers = document.querySelectorAll('.ad-container');
+            const isMobile = window.innerWidth <= 768;
+            
+            adContainers.forEach(container => {
+                container.style.display = isMobile ? 'none' : 'block';
+            });
+        }
+
+        // Initial call and event listener
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add some interactive effects
+        document.querySelectorAll('.info-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Performance optimization - lazy load iframe
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !gameFrame.src) {
+                    gameFrame.src = "https://doodlecricketunblocked.netlify.app/doodle-basketball";
+                }
+            });
+        });
+
+        observer.observe(gameFrame);
+
+        // Add loading animation enhancement
+        let loadingDots = 0;
+        const loadingInterval = setInterval(() => {
+            if (loading.style.display !== 'none') {
+                loadingDots = (loadingDots + 1) % 4;
+                const dotsText = '.'.repeat(loadingDots);
+                const loadingText = loading.textContent.replace(/\.+$/, '');
+                loading.textContent = loadingText + dotsText;
+            } else {
+                clearInterval(loadingInterval);
+            }
+        }, 500);
+    </script>
+</body>
+</html>
